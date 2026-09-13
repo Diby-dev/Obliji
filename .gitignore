@@ -1,3 +1,4 @@
+# --- Laravel Ignores ---
 /vendor/
 node_modules/
 npm-debug.log
@@ -28,3 +29,25 @@ Homestead.json
 .env.production
 .phpactor.json
 auth.json
+
+# --- Flutter Ignores ---
+# Build directories
+**/build/
+.dart_tool/
+.packages
+pubspec.lock
+
+# IDE / Editor specific files
+.vscode/
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Flutter/Dart specific
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# OS generated files
+.DS_Store
+Thumbs.db
