@@ -38,10 +38,17 @@ class AuthService extends ChangeNotifier {
       if (savedToken != null && savedUserJson != null) {
         _token = savedToken;
         _apiService.setToken(savedToken);
-        _currentUser = UserModel.fromJson(jsonDecode(savedUserJson) as Map<String, dynamic>);
+        final user = await _apiService.getMe();
+        _currentUser = UserModel.fromJson(user);
       }
     } catch (_) {
-      // Ignorer l'échec et rester sur l'écran de login
+      // Un jeton expiré ou révoqué ne doit jamais ouvrir le tableau de bord.
+      _currentUser = null;
+      _token = null;
+      _apiService.setToken(null);
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(_keyToken);
+      await prefs.remove(_keyUser);
     } finally {
       _isLoading = false;
       notifyListeners();

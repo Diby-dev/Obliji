@@ -73,6 +73,34 @@ class ApiService {
     }
   }
 
+  /// Vérifie que le jeton restauré localement est toujours valide et renvoie le profil courant.
+  Future<Map<String, dynamic>> getMe() async {
+    final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.meEndpoint}');
+
+    try {
+      final response = await http
+          .get(url, headers: _buildHeaders())
+          .timeout(ApiConstants.timeoutDuration);
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200 && data['success'] == true) {
+        return data['data'] as Map<String, dynamic>;
+      }
+
+      throw ApiException(
+        data['message']?.toString() ?? 'Session invalide ou expirée.',
+        statusCode: response.statusCode,
+      );
+    } on SocketException {
+      throw ApiException('Impossible de joindre le serveur. Vérifiez votre connexion Internet.');
+    } on TimeoutException {
+      throw ApiException('Le serveur met trop de temps à répondre. Veuillez réessayer.');
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      throw ApiException('Une erreur inattendue est survenue : $e');
+    }
+  }
+
   /// Récupération des données du Dashboard Administrateur (métriques + progression par ménager)
   Future<Map<String, dynamic>> getAdminDashboard() async {
     final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.adminDashboardEndpoint}');
