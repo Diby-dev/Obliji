@@ -44,4 +44,26 @@ class ApiLoginTest extends TestCase
             ->assertUnauthorized()
             ->assertJsonPath('success', false);
     }
+
+    public function test_empty_instance_can_create_its_first_administrator_only_once(): void
+    {
+        $this->getJson('/api/initialisation')
+            ->assertOk()
+            ->assertJsonPath('data.requise', true);
+
+        $this->postJson('/api/initialisation/admin', [
+            'nom' => 'Dupont',
+            'prenom' => 'Alice',
+            'email' => 'alice@example.test',
+            'password' => 'un-mot-de-passe-solide',
+            'password_confirmation' => 'un-mot-de-passe-solide',
+        ])
+            ->assertCreated()
+            ->assertJsonPath('data.role', User::ROLE_ADMIN);
+
+        $this->postJson('/api/initialisation/admin', [
+            'nom' => 'Autre', 'prenom' => 'Admin', 'email' => 'autre@example.test',
+            'password' => 'un-mot-de-passe-solide', 'password_confirmation' => 'un-mot-de-passe-solide',
+        ])->assertConflict();
+    }
 }

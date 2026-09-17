@@ -11,6 +11,32 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    public function initialisation(): JsonResponse
+    {
+        return response()->json(['success' => true, 'data' => ['requise' => ! User::query()->exists()]]);
+    }
+
+    /** Accessible uniquement pour initialiser une instance totalement vide. */
+    public function creerPremierAdmin(Request $request): JsonResponse
+    {
+        if (User::query()->exists()) {
+            return response()->json(['success' => false, 'message' => "L'application a déjà été initialisée."], 409);
+        }
+
+        $data = $request->validate([
+            'nom' => 'required|string|max:100',
+            'prenom' => 'required|string|max:100',
+            'email' => 'required|email|max:255|unique:users,email',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+        $admin = User::create([
+            'nom' => $data['nom'], 'prenom' => $data['prenom'], 'email' => $data['email'],
+            'password' => Hash::make($data['password']), 'role' => User::ROLE_ADMIN,
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Administrateur créé. Vous pouvez maintenant vous connecter.', 'data' => $this->userData($admin)], 201);
+    }
+
     public function login(Request $request): JsonResponse
     {
         $data = $request->validate(['email' => 'required|email', 'password' => 'required|string']);

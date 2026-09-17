@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 // --- Routes publiques ---
+Route::get('/initialisation', [AuthController::class, 'initialisation']);
+Route::post('/initialisation/admin', [AuthController::class, 'creerPremierAdmin']);
 Route::post('/login', [AuthController::class, 'login']);
 
 // --- Routes protégées par authentification Sanctum ---

@@ -8,6 +8,8 @@ class ApiConstants {
 
   // Auth
   static const String loginEndpoint = '/login';
+  static const String initialisationEndpoint = '/initialisation';
+  static const String initialAdminEndpoint = '/initialisation/admin';
   static const String logoutEndpoint = '/logout';
   static const String meEndpoint = '/me';
 

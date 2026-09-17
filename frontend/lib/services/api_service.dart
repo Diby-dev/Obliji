@@ -37,6 +37,38 @@ class ApiService {
     return headers;
   }
 
+  /// Indique si l'instance vide doit encore recevoir son premier administrateur.
+  Future<bool> initialisationRequise() async {
+    final response = await http
+        .get(Uri.parse('${ApiConstants.baseUrl}${ApiConstants.initialisationEndpoint}'), headers: _buildHeaders())
+        .timeout(ApiConstants.timeoutDuration);
+    final data = jsonDecode(response.body) as Map<String, dynamic>;
+    if (response.statusCode == 200 && data['success'] == true) {
+      return (data['data'] as Map<String, dynamic>)['requise'] == true;
+    }
+    throw ApiException(data['message']?.toString() ?? 'Impossible de vérifier l\'initialisation.', statusCode: response.statusCode);
+  }
+
+  /// Crée le premier administrateur. Le backend refuse cette action après initialisation.
+  Future<void> creerPremierAdmin({
+    required String nom,
+    required String prenom,
+    required String email,
+    required String password,
+  }) async {
+    final response = await http
+        .post(
+          Uri.parse('${ApiConstants.baseUrl}${ApiConstants.initialAdminEndpoint}'),
+          headers: _buildHeaders(),
+          body: jsonEncode({'nom': nom.trim(), 'prenom': prenom.trim(), 'email': email.trim(), 'password': password, 'password_confirmation': password}),
+        )
+        .timeout(ApiConstants.timeoutDuration);
+    final data = jsonDecode(response.body) as Map<String, dynamic>;
+    if (response.statusCode != 201 || data['success'] != true) {
+      throw ApiException(data['message']?.toString() ?? 'Création de l\'administrateur impossible.', statusCode: response.statusCode);
+    }
+  }
+
   /// Authentification de l'utilisateur
   Future<Map<String, dynamic>> login(String email, String password) async {
     final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.loginEndpoint}');
