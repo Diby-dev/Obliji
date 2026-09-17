@@ -16,6 +16,7 @@ class AssignationTache extends Model
     public const STATUT_A_FAIRE = 'a_faire';
     public const STATUT_EN_COURS = 'en_cours';
     public const STATUT_TERMINE = 'termine';
+    public const STATUT_VALIDE = 'valide';
 
     /**
      * The table associated with the model.
@@ -30,12 +31,12 @@ class AssignationTache extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'user_id',
         'tache_id',
-        'statut',           // 'a_faire', 'en_cours', 'termine'
+        'menager_id',
+        'admin_id',
+        'statut',
         'date_echeance',
-        'date_completion',
-        'commentaires',
+        'commentaire_realisation',
     ];
 
     /**
@@ -44,16 +45,20 @@ class AssignationTache extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'date_echeance' => 'date',
-        'date_completion' => 'datetime',
+        'date_echeance' => 'datetime',
     ];
 
     /**
      * Ménager assigné à la tâche.
      */
-    public function user(): BelongsTo
+    public function menager(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'menager_id');
+    }
+
+    public function admin(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'admin_id');
     }
 
     /**

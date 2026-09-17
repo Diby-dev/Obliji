@@ -9,41 +9,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Notification extends Model
 {
     use HasFactory;
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'notifications';
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'user_id',
-        'titre',
-        'message',
-        'lu',
-        'type',
-    ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'lu' => 'boolean',
-    ];
-
-    /**
-     * Destinataire de la notification.
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
+    public const UPDATED_AT = null;
+    protected $fillable = ['user_id', 'titre', 'message', 'lu'];
+    protected function casts(): array { return ['lu' => 'boolean']; }
+    public function user(): BelongsTo { return $this->belongsTo(User::class); }
 }

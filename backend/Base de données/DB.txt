@@ -1,0 +1,56 @@
+-- Nettoyage au cas où les tables existent déjà (optionnel)
+DROP TABLE IF EXISTS notifications CASCADE;
+DROP TABLE IF EXISTS assignations_taches CASCADE;
+DROP TABLE IF EXISTS taches CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+DROP TYPE IF EXISTS task_status CASCADE;
+DROP TYPE IF EXISTS user_role CASCADE;
+
+-- 1. Création des types énumérés (rôles et statuts)
+CREATE TYPE user_role AS ENUM ('admin', 'menager');
+CREATE TYPE task_status AS ENUM ('a_faire', 'en_cours', 'termine', 'valide');
+
+-- 2. Table des utilisateurs (Administrateurs et Ménagers)
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL,
+    prenom VARCHAR(100) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role user_role NOT NULL DEFAULT 'menager',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 3. Table des tâches (Modèles de tâches disponibles)
+CREATE TABLE taches (
+    id SERIAL PRIMARY KEY,
+    titre VARCHAR(150) NOT NULL,
+    description TEXT,
+    frequence VARCHAR(50) DEFAULT 'ponctuel',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 4. Table des assignations (Liaison entre tâches, ménagers et admins)
+CREATE TABLE assignations_taches (
+    id SERIAL PRIMARY KEY,
+    tache_id INT NOT NULL REFERENCES taches(id) ON DELETE CASCADE,
+    menager_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    admin_id INT REFERENCES users(id) ON DELETE SET NULL,
+    statut task_status DEFAULT 'a_faire',
+    date_echeance TIMESTAMP,
+    commentaire_realisation TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 5. Table des notifications pour les utilisateurs
+CREATE TABLE notifications (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    titre VARCHAR(150) NOT NULL,
+    message TEXT NOT NULL,
+    lu BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

@@ -14,7 +14,8 @@ class ApiLoginTest extends TestCase
     public function test_login_route_returns_a_token_for_valid_credentials(): void
     {
         User::query()->create([
-            'name' => 'Administrateur',
+            'nom' => 'Admin',
+            'prenom' => 'Administrateur',
             'email' => 'admin@example.test',
             'password' => Hash::make('secret-password'),
             'role' => User::ROLE_ADMIN,

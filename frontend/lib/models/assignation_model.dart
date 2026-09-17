@@ -5,7 +5,8 @@ import 'user_model.dart';
 
 class AssignationModel {
   final int id;
-  final int userId;
+  /// Identifiant du ménager, colonne `menager_id` dans PostgreSQL.
+  final int menagerId;
   final int tacheId;
   String statut; // 'a_faire', 'en_cours', 'termine'
   final DateTime? dateEcheance;
@@ -16,7 +17,7 @@ class AssignationModel {
 
   AssignationModel({
     required this.id,
-    required this.userId,
+    required this.menagerId,
     required this.tacheId,
     required this.statut,
     this.dateEcheance,
@@ -57,9 +58,9 @@ class AssignationModel {
   factory AssignationModel.fromJson(Map<String, dynamic> json) {
     return AssignationModel(
       id: json['id'] is int ? json['id'] : int.parse(json['id'].toString()),
-      userId: json['user_id'] is int
-          ? json['user_id']
-          : int.parse(json['user_id'].toString()),
+      menagerId: json['menager_id'] is int
+          ? json['menager_id']
+          : int.parse(json['menager_id'].toString()),
       tacheId: json['tache_id'] is int
           ? json['tache_id']
           : int.parse(json['tache_id'].toString()),
@@ -67,12 +68,9 @@ class AssignationModel {
       dateEcheance: json['date_echeance'] != null
           ? DateTime.tryParse(json['date_echeance'].toString())
           : null,
-      dateCompletion: json['date_completion'] != null
-          ? DateTime.tryParse(json['date_completion'].toString())
-          : null,
-      commentaires: json['commentaires'] as String?,
-      user: json['user'] != null && json['user'] is Map<String, dynamic>
-          ? UserModel.fromJson(json['user'] as Map<String, dynamic>)
+      commentaires: json['commentaire_realisation'] as String?,
+      user: json['menager'] != null && json['menager'] is Map<String, dynamic>
+          ? UserModel.fromJson(json['menager'] as Map<String, dynamic>)
           : null,
       tache: json['tache'] != null && json['tache'] is Map<String, dynamic>
           ? TacheModel.fromJson(json['tache'] as Map<String, dynamic>)
@@ -83,12 +81,11 @@ class AssignationModel {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'user_id': userId,
+      'menager_id': menagerId,
       'tache_id': tacheId,
       'statut': statut,
       'date_echeance': dateEcheance?.toIso8601String(),
-      'date_completion': dateCompletion?.toIso8601String(),
-      'commentaires': commentaires,
+      'commentaire_realisation': commentaires,
     };
   }
 }
