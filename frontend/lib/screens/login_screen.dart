@@ -223,64 +223,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         );
                       },
                     ),
-                    const SizedBox(height: 24),
-
-                    // Raccourcis de test rapide
-                    Container(
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        color: AppTheme.surfaceElevated.withValues(alpha: 0.5),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: AppTheme.border),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Comptes de démonstration :',
-                            style: TextStyle(
-                              color: AppTheme.textSecondary,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: OutlinedButton(
-                                  style: OutlinedButton.styleFrom(
-                                    foregroundColor: AppTheme.primary,
-                                    side: const BorderSide(color: AppTheme.border),
-                                    padding: const EdgeInsets.symmetric(vertical: 8),
-                                  ),
-                                  onPressed: () {
-                                    _emailController.text = 'admin@obliji.com';
-                                    _passwordController.text = 'password';
-                                  },
-                                  child: const Text('Admin', style: TextStyle(fontSize: 12)),
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: OutlinedButton(
-                                  style: OutlinedButton.styleFrom(
-                                    foregroundColor: AppTheme.secondary,
-                                    side: const BorderSide(color: AppTheme.border),
-                                    padding: const EdgeInsets.symmetric(vertical: 8),
-                                  ),
-                                  onPressed: () {
-                                    _emailController.text = 'menager@obliji.com';
-                                    _passwordController.text = 'password';
-                                  },
-                                  child: const Text('Ménager', style: TextStyle(fontSize: 12)),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
                   ],
                 ),
               ),
